@@ -18,7 +18,14 @@ if (ANDROID)
 	target_link_directories(cavacore PRIVATE "${FFTW_DIR}/obj/local/${CMAKE_ANDROID_ARCH_ABI}/")
 	target_link_libraries(cavacore fftw3)
 elseif(WIN32)
-	find_package(Threads REQUIRED)
+	find_package(FFTW3 CONFIG REQUIRED)
+	find_package(GLEW CONFIG REQUIRED)
+	find_package(SDL2 CONFIG REQUIRED)
+	if (USING_VCPKG)
+		find_package(PThreads4W REQUIRED)
+	else()
+		find_package(Threads REQUIRED)
+	endif()
 
 	add_executable(cava
 		cava.c
@@ -26,21 +33,23 @@ elseif(WIN32)
 		config.c
 		input/common.c
 		input/winscap.c
+		output/sdl_cava.c
+		output/sdl_glsl.c
 		output/terminal_noncurses.c
 		output/raw.c
 		output/noritake.c
 		cava_win/cava.rc
 	)
 
-	if (NOT DEFINED FFTW3_INCLUDE_DIR OR NOT DEFINED FFTW3_LIB)
-		message(FATAL_ERROR "FFTW3_INCLUDE_DIR and FFTW3_LIB must be set on Windows, e.g. -DFFTW3_INCLUDE_DIR=C:/fftw -DFFTW3_LIB=C:/fftw/libfftw3-3.dll")
+    target_compile_definitions(cava PRIVATE SDL SDL_GLSL NDEBUG GLEW_STATIC)
+	target_include_directories(cava PRIVATE ${GLEW_INCLUDE_DIRS} ${SDL2_INCLUDE_DIRS})
+	if (USING_VCPKG)
+		find_package(PThreads4W REQUIRED)
+		target_link_libraries(cava PRIVATE PThreads4W::PThreads4W shlwapi FFTW3::fftw3 GLEW::GLEW SDL2::SDL2)
+	else()
+		target_link_libraries(cava PRIVATE Threads::Threads shlwapi fftw3 GLEW::GLEW SDL2::SDL2)
+		find_package(Threads REQUIRED)
 	endif()
-
-	target_compile_definitions(cava PRIVATE NDEBUG)
-	target_include_directories(cava PRIVATE ${FFTW3_INCLUDE_DIR})
-	target_link_libraries(cava PRIVATE Threads::Threads shlwapi "${FFTW3_LIB}")
-	target_link_options(cava PRIVATE -static)
-	set_target_properties(cava PROPERTIES OUTPUT_NAME yara)
 else()
 	message(STATUS "Building cavacore library and cava executable for Linux/Unix")
 	message(STATUS "NOTE: The default supported method of building cava executable for Linux/Unix is with autoconf/automake")

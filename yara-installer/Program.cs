@@ -11,15 +11,21 @@ internal static class Program
     private const string AppName = "yara";
     private const string InstallerExe = "yara-uninstaller.exe";
     private const string AppExe = "yara.exe";
-    private const string FftwDll = "libfftw3-3.dll";
     private const string IconFile = "yara.ico";
     private const string UninstallKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\yara";
+
+    private static readonly string[] RuntimeDlls =
+    {
+        "libfftw3.dll",
+        "glew32.dll",
+        "SDL2.dll",
+        "libwinpthread-1.dll",
+    };
 
     private static string InstallDir => Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", AppName);
 
     private static string AppExePath => Path.Combine(InstallDir, AppExe);
-    private static string FftwPath => Path.Combine(InstallDir, FftwDll);
     private static string IconPath => Path.Combine(InstallDir, IconFile);
     private static string UninstallerPath => Path.Combine(InstallDir, InstallerExe);
     private static string StartMenuPath => Path.Combine(
@@ -47,7 +53,8 @@ internal static class Program
 
         Directory.CreateDirectory(InstallDir);
         WriteResource("yara.exe.gz", AppExePath, decompress: true);
-        WriteResource("libfftw3-3.dll.gz", FftwPath, decompress: true);
+        foreach (string dll in RuntimeDlls)
+            WriteResource(dll + ".gz", Path.Combine(InstallDir, dll), decompress: true);
         WriteResource("yara.ico", IconPath, decompress: false);
         CopySelfTo(UninstallerPath);
 
@@ -60,7 +67,8 @@ internal static class Program
         Console.WriteLine("  " + InstallDir);
         Console.WriteLine("Added to your user PATH (new terminal windows will pick it up).");
         Console.WriteLine("Run it with the command:  yara");
-        Console.WriteLine("Tip: open yara in Windows Terminal for the best colors.");
+        Console.WriteLine("Config file: " + Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "yara", "config"));
         Console.WriteLine();
         if (!silent && !Console.IsInputRedirected)
         {
@@ -171,7 +179,7 @@ internal static class Program
             link.TargetPath = AppExePath;
             link.WorkingDirectory = InstallDir;
             link.IconLocation = IconPath + ",0";
-            link.Description = "yara - console audio visualizer";
+            link.Description = "yara - realtime audio visualizer";
             link.Save();
             Console.WriteLine("Created Start Menu shortcut.");
         }
@@ -186,7 +194,7 @@ internal static class Program
         using var key = Registry.CurrentUser.CreateSubKey(UninstallKeyPath);
         if (key == null) return;
         string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
-        key.SetValue("DisplayName", "yara - console audio visualizer");
+        key.SetValue("DisplayName", "yara - realtime audio visualizer");
         key.SetValue("DisplayVersion", version);
         key.SetValue("Publisher", "yara contributors");
         key.SetValue("DisplayIcon", AppExePath);
@@ -195,7 +203,7 @@ internal static class Program
         key.SetValue("QuietUninstallString", "\"" + UninstallerPath + "\" --uninstall --silent");
         key.SetValue("NoModify", 1, RegistryValueKind.DWord);
         key.SetValue("NoRepair", 1, RegistryValueKind.DWord);
-        key.SetValue("EstimatedSize", 38, RegistryValueKind.DWord);
+        key.SetValue("EstimatedSize", 6000, RegistryValueKind.DWord);
         Console.WriteLine("Registered in Apps & Features.");
     }
 

@@ -7,9 +7,9 @@
     <Nullable>enable</Nullable>
     <AssemblyName>yara-installer</AssemblyName>
     <ApplicationIcon>..\yara.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    <Version>3.0.0</Version>
     <Product>yara Installer</Product>
-    <Description>Installer for yara, a console audio visualizer</Description>
+    <Description>Installer for yara, a realtime audio visualizer</Description>
     <Copyright>Copyright (c) 2026 yara contributors</Copyright>
     <NoWarn>CA1416</NoWarn>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -18,7 +18,10 @@
   <ItemGroup>
     <EmbeddedResource Include="..\yara.ico" LogicalName="yara.ico" />
     <EmbeddedResource Include="embed\yara.exe.gz" LogicalName="yara.exe.gz" />
-    <EmbeddedResource Include="embed\libfftw3-3.dll.gz" LogicalName="libfftw3-3.dll.gz" />
+    <EmbeddedResource Include="embed\libfftw3.dll.gz" LogicalName="libfftw3.dll.gz" />
+    <EmbeddedResource Include="embed\glew32.dll.gz" LogicalName="glew32.dll.gz" />
+    <EmbeddedResource Include="embed\SDL2.dll.gz" LogicalName="SDL2.dll.gz" />
+    <EmbeddedResource Include="embed\libwinpthread-1.dll.gz" LogicalName="libwinpthread-1.dll.gz" />
   </ItemGroup>
 
 </Project>

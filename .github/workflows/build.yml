@@ -28,6 +28,7 @@ jobs:
           $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
           gcc --version
           cmake --version
+          vcpkg version
 
       - name: Build
         shell: pwsh
@@ -40,7 +41,9 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path release -Force | Out-Null
           Copy-Item publish/yara.exe release/yara-win-x64.exe
-          Copy-Item publish/libfftw3-3.dll release/libfftw3-3.dll
+          foreach ($dll in 'libfftw3.dll', 'glew32.dll', 'SDL2.dll', 'libwinpthread-1.dll') {
+            Copy-Item "publish/$dll" "release/$dll"
+          }
           Copy-Item yara-installer/publish/yara-installer.exe release/yara-installer-win-x64.exe
           Compress-Archive -Path yara-installer/publish/yara-installer.exe -DestinationPath release/yara-installer-win-x64.zip
 

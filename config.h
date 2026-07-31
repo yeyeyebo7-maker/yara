@@ -63,6 +63,7 @@
 
 #ifdef _WIN32
 #define HAS_WINSCAP true
+#define SDL true
 #define HAS_FIFO false
 #define HAS_SHMEM false
 #define PATH_MAX 260
