@@ -6,7 +6,9 @@ yara is an audio visualizer — built for Windows.
 Windows binary releases are on the [releases page](../../releases): download `yara-installer-win-x64.exe`, install, and run `yara`. The config lives at `%APPDATA%\yara\config`.
 
 ---
+![spectrum](https://github.com/karlstav/cava/blob/master/example_files/cava.gif "spectrum")
 
+[Demo video](https://youtu.be/9PSp8VA6yjU)
 ====================
 
 **C**ross-platform **A**udio **V**isu**a**lizer
