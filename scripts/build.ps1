@@ -27,7 +27,7 @@ $toolchain = Join-Path $VcpkgRoot 'scripts\buildsystems\vcpkg.cmake'
 $installed = Join-Path $VcpkgRoot "installed\$triplet"
 
 Write-Host "==> Installing vcpkg dependencies (sdl2, glew, fftw3)"
-& (Join-Path $VcpkgRoot 'vcpkg.exe') install sdl2 glew fftw3 --triplet $triplet
+& (Join-Path $VcpkgRoot 'vcpkg.exe') install sdl2 glew fftw3 --triplet $triplet --classic
 if ($LASTEXITCODE -ne 0) { throw 'vcpkg install failed' }
 
 Write-Host "==> Configuring CMake build (MinGW + vcpkg)"
