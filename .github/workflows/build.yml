@@ -21,15 +21,26 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      - name: Install MinGW and CMake
+        shell: pwsh
+        run: |
+          choco install mingw cmake -y --no-progress
+          $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
+          gcc --version
+          cmake --version
+
       - name: Build
         shell: pwsh
-        run: ./scripts/build.ps1
+        run: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
+          ./scripts/build.ps1
 
       - name: Stage release assets
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path release -Force | Out-Null
           Copy-Item publish/yara.exe release/yara-win-x64.exe
+          Copy-Item publish/libfftw3-3.dll release/libfftw3-3.dll
           Copy-Item yara-installer/publish/yara-installer.exe release/yara-installer-win-x64.exe
           Compress-Archive -Path yara-installer/publish/yara-installer.exe -DestinationPath release/yara-installer-win-x64.zip
 

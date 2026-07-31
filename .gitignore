@@ -1,7 +1,9 @@
 bin/
 obj/
+build/
 publish/
+yara-installer/embed/
+yara-installer/publish/
 *.user
 .vs/
 .vscode/
-yara-installer/embed/

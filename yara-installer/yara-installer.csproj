@@ -18,6 +18,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\yara.ico" LogicalName="yara.ico" />
     <EmbeddedResource Include="embed\yara.exe.gz" LogicalName="yara.exe.gz" />
+    <EmbeddedResource Include="embed\libfftw3-3.dll.gz" LogicalName="libfftw3-3.dll.gz" />
   </ItemGroup>
 
 </Project>

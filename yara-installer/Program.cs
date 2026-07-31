@@ -11,6 +11,7 @@ internal static class Program
     private const string AppName = "yara";
     private const string InstallerExe = "yara-uninstaller.exe";
     private const string AppExe = "yara.exe";
+    private const string FftwDll = "libfftw3-3.dll";
     private const string IconFile = "yara.ico";
     private const string UninstallKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\yara";
 
@@ -18,6 +19,7 @@ internal static class Program
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", AppName);
 
     private static string AppExePath => Path.Combine(InstallDir, AppExe);
+    private static string FftwPath => Path.Combine(InstallDir, FftwDll);
     private static string IconPath => Path.Combine(InstallDir, IconFile);
     private static string UninstallerPath => Path.Combine(InstallDir, InstallerExe);
     private static string StartMenuPath => Path.Combine(
@@ -45,6 +47,7 @@ internal static class Program
 
         Directory.CreateDirectory(InstallDir);
         WriteResource("yara.exe.gz", AppExePath, decompress: true);
+        WriteResource("libfftw3-3.dll.gz", FftwPath, decompress: true);
         WriteResource("yara.ico", IconPath, decompress: false);
         CopySelfTo(UninstallerPath);
 

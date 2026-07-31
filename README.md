@@ -1,18 +1,21 @@
 # yara
 
-A cava-style console audio visualizer for Windows. It captures your system audio
-(WASAPI loopback) and draws real-time FFT bars in the terminal.
+A console audio visualizer for Windows — a port of
+[cava](https://github.com/karlstav/cava) that captures your system audio with
+WASAPI loopback and draws real-time FFT bars in the terminal.
 
-![rainbow bars in a terminal]
+This project builds the upstream cava C source with only minimal changes for a
+standalone Windows build (no SDL, no ncurses, no Linux audio backends). The
+rendering, FFT, and configuration are all the real cava.
 
 ## Features
 
 - Captures the audio actually playing on your PC (Spotify, YouTube, games, anything)
-- Smooth, glitch-free bars with 8 sub-levels per character row
-- Rainbow gradient across the frequency spectrum, or a solid color
-- Log-scaled frequencies, auto gain, mirror mode
-- Runs entirely in the terminal, no window decorations
-- Self-contained — no .NET runtime or audio drivers needed to install
+- Native WASAPI loopback capture, event-driven and low-latency
+- 8 sub-levels per character row, auto sensitivity, log-scaled bars
+- Rainbow gradients, mirror/split orientations, raw output, and more
+- Configured with the standard cava `config` file
+- No runtime dependencies — a single exe plus one FFT library DLL
 
 ## Install
 
@@ -32,44 +35,55 @@ Then open a new terminal and run:
 yara
 ```
 
-> For the best look, use **Windows Terminal** and enable a font that supports
-> block characters (Cascadia Mono, Consolas, etc.).
+> For the best look, use **Windows Terminal** — the font should support block
+> characters (Cascadia Mono, Consolas, etc.).
 
 ### Uninstall
 
 - Open **Settings > Apps > Installed apps**, find *yara*, and choose Uninstall, or
 - run `yara-uninstaller.exe` from the install folder.
 
-## Options
+## Configuration
 
-| Option          | Description                            | Default   |
-| --------------- | -------------------------------------- | --------- |
-| `--bars N`      | Number of bars (auto-fits width)       | auto      |
-| `--fps N`       | Frame rate                             | 60        |
-| `--fft N`       | FFT size (power of two)                | 1024      |
-| `--fmin Hz`     | Lowest frequency shown                 | 20        |
-| `--fmax Hz`     | Highest frequency shown                | 16000     |
-| `--gain F`      | Manual gain multiplier                 | 1.0       |
-| `--barwidth N`  | Bar width in cells                     | 1         |
-| `--gap N`       | Cells between bars                     | 1         |
-| `--color RRGGBB`| Solid color instead of rainbow         | —         |
-| `--mirror`      | Symmetric vertical mirror              | off       |
-| `--no-autosens` | Disable auto gain                      | —         |
-| `--no-help`     | Hide the status bar                    | —         |
+On first run yara creates its config file at:
+
+```
+%USERPROFILE%\.config\yara\config
+```
+
+Everything is configured there: number of bars, frame rate, sensitivity,
+colors, gradient, orientation, FFT cutoffs, and more. See
+[example_files/config](example_files/config) for the full option list with
+comments, and [TERMINAL.md](TERMINAL.md) for the terminal output modes.
+
+### Command-line options
+
+```
+Usage: yara [options]
+  -p, --config <path>   Path to config file
+  -v, --version         Print version and exit
+  -h, --help            Show this help and exit
+```
 
 ### Keys
 
-| Key   | Action          |
-| ----- | --------------- |
-| `q`   | Quit            |
-| `+`/`-` | Gain up/down  |
-| `m`   | Toggle mirror   |
-| `a`   | Toggle auto gain|
-| `h`   | Toggle status bar |
+| Key | Action |
+| --- | ------ |
+| `Up` / `Down` | Increase / decrease sensitivity |
+| `Left` / `Right` | Decrease / increase number of bars |
+| `r` | Reload config |
+| `c` | Reload colors only |
+| `f` / `b` | Cycle foreground / background color |
+| `o` | Change orientation |
+| `q` | Quit |
 
 ## Build from source
 
-Requires the .NET 9 SDK.
+On Windows, the build needs:
+
+- CMake (>= 3.13)
+- MinGW-w64 (gcc, with `posix` threads)
+- FFTW3 for Windows (`fftw-3.3.5-dll64.zip` from fftw.org)
 
 ```powershell
 git clone https://github.com/yeyeyebo7-maker/yara.git
@@ -77,14 +91,16 @@ cd yara
 .\scripts\build.ps1
 ```
 
-Artifacts are written to `publish\yara.exe` and `yara-installer\publish\yara-installer.exe`.
+`scripts/build.ps1` downloads FFTW if needed, runs CMake + MinGW, then builds
+the installer. Artifacts are written to `publish\yara.exe` and
+`yara-installer\publish\yara-installer.exe`.
 
-To just run it from source:
+## Credits
 
-```powershell
-dotnet run --project .\yara.csproj -c Release
-```
+This is the source of [cava](https://github.com/karlstav/cava) by Karl
+Stavestrand, adapted into a Windows-only terminal build. All upstream files
+keep their original form wherever possible.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) (cava is MIT licensed)
