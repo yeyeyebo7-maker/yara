@@ -17,7 +17,7 @@ A cava-style console audio visualizer for Windows. It captures your system audio
 ## Install
 
 Download the latest `yara-installer.exe` from the
-[Releases page](https://github.com/USERNAME/yara/releases) and run it.
+[Releases page](https://github.com/yeyeyebo7-maker/yara/releases) and run it.
 
 The installer:
 
@@ -72,7 +72,7 @@ yara
 Requires the .NET 9 SDK.
 
 ```powershell
-git clone https://github.com/USERNAME/yara.git
+git clone https://github.com/yeyeyebo7-maker/yara.git
 cd yara
 .\scripts\build.ps1
 ```
