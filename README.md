@@ -14,7 +14,6 @@ Windows binary releases are on the [releases page](../../releases): download `ya
 **C**ross-platform **A**udio **V**isu**a**lizer
 
 
-[Demo video](https://youtu.be/9PSp8VA6yjU)
 
 - [What it is](#what-it-is)
 - [Installing](#installing)
